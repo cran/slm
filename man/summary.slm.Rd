@@ -27,7 +27,7 @@ The function \code{summary.slm} computes and returns a list of summary statistic
  \item{df }{ degrees of freedom, a 3-vector \eqn{(p, n-p, p*)}, the first being the number of non-aliased coefficients, the last being the total number of coefficients.}
  \item{chi2statistic }{ a 2-vector with the value of the chi2-statistic with its degree of freedom.}
  \item{r.squared }{ \eqn{R^2}, the 'fraction of variance explained by the model'.}
- \item{cov.unscaled }{ a \eqn{p*p} matrix of (unscaled) covariances of the \eqn{coef[j], j=1, \ldots, p}.}
+ \item{cov.unscaled }{ the matrix (X^{t} X)^{(-1)}.}
  \item{correlation }{ the correlation matrix corresponding to the above \code{cov.unscaled}, if \code{correlation = TRUE} is specified.}
  \item{symbolic.cor }{ (only if \code{correlation} is true.) The value of the argument \code{symbolic.cor}.}
 }

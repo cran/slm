@@ -31,6 +31,4 @@ This function computes an estimation of the risk for the tapered covariance matr
 \references{
 E. Caron, J. Dedecker and B. Michel (2019). Linear regression with stationary errors: the R package slm. \emph{arXiv preprint arXiv:1906.06583}.
  \url{https://arxiv.org/abs/1906.06583}.
-
- W.B. Wu, M. Pourahmadi (2009). Banding sample autocovariance matrices of stationary processes. \emph{Statistica Sinica}, pp. 1755–1768.
 }

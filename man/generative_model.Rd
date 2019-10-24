@@ -21,8 +21,7 @@ This function returns a design for the regression linear model, without the inte
 
  The second model "mod2" contains two columns, the first equal to \eqn{log(i) + sin(i) + X_i} and the second equal to \eqn{i}, for \eqn{i=1,...,n}.
  The process \eqn{X} is again an AR(1) process with \code{phi_1 = 0.5}. More information about "mod2" is available in the paper of
- E. Caron, J. Dedecker and B. Michel (2019). Linear regression with stationary errors: the R package slm. \emph{arXiv preprint arXiv:1906.06583}.
- \url{https://arxiv.org/abs/1906.06583}.
+ E. Caron, J. Dedecker and B. Michel (2019). Linear regression with stationary errors: the R package slm.
 }
 \examples{
 generative_model(500,"mod1")

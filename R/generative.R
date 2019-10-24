@@ -1,6 +1,6 @@
 #' @title Some stationary processes
 #'
-#' @description This is a generative function. The user chooses one of the \code{process}: "AR1", "AR12", "MA12", "Nonmixing", "sysdyn", and it
+#' @description This is a generative function. The user chooses one of the \code{process}: "iid", "AR1", "AR12", "MA12", "Nonmixing", "sysdyn", and it
 #'  generates the chosen process. These processes are fully described in the paper of
 #'  E. Caron, J. Dedecker and B. Michel (2019). Linear regression with stationary errors: the R package slm. \emph{arXiv preprint arXiv:1906.06583}.
 #'  \url{https://arxiv.org/abs/1906.06583}.
@@ -22,6 +22,7 @@
 #' generative_process(200,"Nonmixing")
 generative_process <- function(n, process = "AR1", phi = "numeric", theta = "numeric"){
   switch(process,
+         iid = {out = rt(n,10)^2 - (5/4)},
          # gaussian AR1, phi1=0.7, sigma_2=1
          AR1 = {out = arima.sim(list(ar = c(phi[1])), n)},
          # AR12, phi1=0.5, phi12=0.2, periode = 12, Bruit gaussien sigma_2=1, X_{t} - 0.5 X_{t-1} - 0.2 X_{t-12} = \epsilon_{t}
@@ -62,8 +63,7 @@ generative_process <- function(n, process = "AR1", phi = "numeric", theta = "num
 #'
 #'  The second model "mod2" contains two columns, the first equal to \eqn{log(i) + sin(i) + X_i} and the second equal to \eqn{i}, for \eqn{i=1,...,n}.
 #'  The process \eqn{X} is again an AR(1) process with \code{phi_1 = 0.5}. More information about "mod2" is available in the paper of
-#'  E. Caron, J. Dedecker and B. Michel (2019). Linear regression with stationary errors: the R package slm. \emph{arXiv preprint arXiv:1906.06583}.
-#'  \url{https://arxiv.org/abs/1906.06583}.
+#'  E. Caron, J. Dedecker and B. Michel (2019). Linear regression with stationary errors: the R package slm.
 #'
 #' @param n samples size.
 #' @param model a list of character to choose the model.

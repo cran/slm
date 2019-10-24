@@ -48,7 +48,7 @@ slm.class <- setClass("slm",
 #'  typically the environment from which \code{slm} is called.
 #' @param model,x,y,qr logicals. If \code{TRUE} the corresponding components of the fit (the model frame, the model matrix, the response, the QR decomposition) are returned.
 #' @param method_cov_st the method chosen by the user to estimate the autocovariances of the error process. The user
-#'  has the choice between the methods "fitAR", "spectralproj", "efromovich", "kernel", or "select". By default, the
+#'  has the choice between the methods "fitAR", "spectralproj", "efromovich", "kernel", "select" or "hac". By default, the
 #'  "fitAR" method is used.
 #' @param cov_st the estimated autocovariances of the error process. The user can give his own vector.
 #' @param Cov_ST an argument given by the user if he wants to use his own covariance matrix estimator.
@@ -72,14 +72,15 @@ slm.class <- setClass("slm",
 #'  useful features of the value returned by \code{slm}.
 #'  An object of class "\code{slm}" is a list containing at least the following components:
 #'  \item{method_cov_st }{ print the method chosen.}
-#'  \item{cov_st }{ the estimated autocovariances of the error process.}
-#'  \item{Cov_ST }{ if given by the user, the estimated covariance matrix of the error process.}
+#'  \item{cov_st }{ the estimated autocovariances of the error process. NA if "hac" is used.}
+#'  \item{Cov_ST }{ if given by the user, the estimated covariance matrix of the error process. NA if "hac" is used.}
+#If \code{method_cov_st = "hac"}, then \code{Cov_ST} is the covariance matrix estimator.}
 #'  \item{model_selec }{ the order of the method.}
-#'  \item{norm_matrix }{ the normalization matrix of the design.}
+#'  \item{norm_matrix }{ the normalization matrix of the least squares estimator.}
 #'  \item{design_qr }{ the matrix \eqn{(X^{t} X)^{-1}}.}
-#'  \item{coefficients }{ a named vector of coefficients.}
+#'  \item{coefficients }{ a named vector of the estimated coefficients.}
 #'  \item{residuals }{ the residuals, that is response minus fitted values.}
-#'  \item{fitted.values }{ the fitted mean values.}
+#'  \item{fitted.values }{ the fitted values.}
 #'  \item{rank }{ the numeric rank of the fitted linear model.}
 #'  \item{df.residual}{ the number of observations minus the number of variables.}
 #'  \item{call }{ the matched call.}
@@ -145,29 +146,36 @@ slm <- function(myformula,
   #normalization matrix
   Y = lm_call$model[[1]]
   #intercept added in the design X. (To compute Cn)
-  design = cbind(rep(1,length(Y)),as.matrix(lm_call$model[-1]))
-  design_qr = chol2inv(qr.R(qr(design))) #(X^{t} X)^{-1}, with intercept
-  # or, for design_qr
-  # p <- lm_call$rank #p = number of variables, with intercept
-  # Qr <- qr(lm_call)
-  # p1 <- 1L:p #p = var. number
-  # design_qr <- chol2inv(Qr$qr[p1, p1, drop = FALSE]) #= (XtX)^-1
+  design = model.matrix(lm_call)
 
-  norm_matrix = diag(sqrt(apply(design^2,2,sum)),nrow=dim(design)[2])
+  p <- lm_call$rank #p = number of variables, with intercept
+  Qr <- qr(lm_call)
+  p1 <- 1L:p #p = var. number
+  design_qr <- chol2inv(Qr$qr[p1, p1, drop = FALSE]) # = (X^{t} X)^{-1}, with intercept
+  #design_qr = chol2inv(qr.R(qr(design)))
+
+  #norm_matrix = diag(sqrt(diag(solve(vcov(lm_call)/summary(lm_call)$sigma^2))))
+  norm_matrix = diag(sqrt(apply(design^2,2,sum)), nrow=dim(design)[2])
 
   # covariance estimation
   if (is.null(cov_st) && is.null(Cov_ST)){
-    mylist = cov_method(epsilon = lm_call$residuals,
-                        method_cov_st = method_cov_st,
-                        model_selec = model_selec,
-                        model_max = model_max,
-                        kernel_fonc = kernel_fonc,
-                        block_size = block_size,
-                        block_n = block_n,
-                        plot = plot)
-    cov_st = mylist$cov_st
-    Cov_ST = matrix(NA_real_)
-    model_selec = mylist$model_selec
+    if (method_cov_st=="hac") {
+      model_selec = NA_real_
+      cov_st = NA_real_
+      Cov_ST = matrix(NA_real_)
+    } else {
+      mylist = cov_method(epsilon = lm_call$residuals,
+                          method_cov_st = method_cov_st,
+                          model_selec = model_selec,
+                          model_max = model_max,
+                          kernel_fonc = kernel_fonc,
+                          block_size = block_size,
+                          block_n = block_n,
+                          plot = plot)
+      cov_st = mylist$cov_st
+      Cov_ST = matrix(NA_real_)
+      model_selec = mylist$model_selec
+    }
   } else {
     if (is.null(Cov_ST)) {
       epsilon = lm_call$residuals
@@ -175,7 +183,7 @@ slm <- function(myformula,
       model_selec = NA_real_
       cov_st = cov_st
       Cov_ST = matrix(NA_real_)
-    } else if(is.null(cov_st)) {
+    } else if (is.null(cov_st)) {
       epsilon = lm_call$residuals
       method_cov_st = "manual_matrix"
       model_selec = NA_real_
@@ -285,13 +293,24 @@ cov_AR <- function(epsilon, model_selec = -1, plot=FALSE){
   n = length(epsilon)
   if (model_selec == -1){
     my_ar = ar(epsilon, aic = TRUE)
-    coef_ar = my_ar$ar #coefficients of the ar process
-    cov_st = ltsa::tacvfARMA(phi=coef_ar, maxLag=n-1, sigma2=my_ar$var.pred) #theoretical covariance vector of the ar fitted
-    model_selec = my_ar$order #order of the ar process
+    if (my_ar$order==0) {
+      cov_st = rep(0,n)
+      cov_st[1] = var(epsilon)
+      model_selec = my_ar$order #order of the ar process
+    } else {
+      coef_ar = my_ar$ar #coefficients of the ar process
+      cov_st = ltsa::tacvfARMA(phi=coef_ar, maxLag=n-1, sigma2=my_ar$var.pred) #theoretical covariance vector of the ar fitted
+      model_selec = my_ar$order #order of the ar process
+    }
   } else {
-    my_ar = ar(epsilon, aic = FALSE, order.max = model_selec)
-    coef_ar = my_ar$ar #coefficients of the ar process
-    cov_st = ltsa::tacvfARMA(phi=coef_ar, maxLag=n-1, sigma2=my_ar$var.pred) #theoretical covariance vector of the ar fitted
+    if (model_selec == 0){
+      cov_st = rep(0,n)
+      cov_st[1] = var(epsilon)
+    } else {
+      my_ar = ar(epsilon, aic = FALSE, order.max = model_selec)
+      coef_ar = my_ar$ar #coefficients of the ar process
+      cov_st = ltsa::tacvfARMA(phi=coef_ar, maxLag=n-1, sigma2=my_ar$var.pred) #theoretical covariance vector of the ar fitted
+    }
   }
   return(list(model_selec=model_selec,cov_st=cov_st))
 }
@@ -300,7 +319,7 @@ cov_AR <- function(epsilon, model_selec = -1, plot=FALSE){
 #'
 #' @description Computes a data-driven histogram estimator of the spectral density of a process and compute its Fourier coefficients,
 #'  that is the associated autocovariances. For a dimension \eqn{d}, the estimator of the spectral density is an histogram on a regular basis of
-#'  size \eqn{d}. Then we use a penalized criterion in order to choose the dimension which balance the bias and the variance. The penalty
+#'  size \eqn{d}. Then we use a penalized criterion in order to choose the dimension which balance the bias and the variance, as proposed in Comte (2001). The penalty
 #'  is of the form \eqn{c*d/n}, where \eqn{c} is the constant and \eqn{n} the sample size. The dimension and the constant of the penalty are
 #'  chosen with the slope heuristic method, with the dimension jump algorithm (from package "\code{\link[capushe:capushe]{capushe}}").
 #'
@@ -453,7 +472,7 @@ cov_select <- function(epsilon, model_selec, plot=FALSE){
 #' @description This method estimates the spectral density and the autocovariances of the error process via a lag-window
 #'  (or kernel) estimator (see P.J. Brockwell and R.A. Davis (1991). Time Series: Theory and Methods. \emph{Springer Science & Business Media},
 #'  page 330). The weights are computed according to a kernel \eqn{K} and a bandwidth \eqn{h} (or a lag),
-#'  to be chosen by the user. The lag can be computed automatically by using a bootstrap technique (via the \code{\link[slm:Rboot]{Rboot}} function).
+#'  to be chosen by the user. The lag can be computed automatically by using a bootstrap technique (as in Wu and Pourahmadi (2009)), via the \code{\link[slm:Rboot]{Rboot}} function.
 #which can be understood like the number of covariance terms to keep to have a good approximation of the covariance vector.
 #'
 #' @usage cov_kernel(epsilon, model_selec = -1,
@@ -533,7 +552,7 @@ cov_kernel <- function(epsilon, model_selec = -1, model_max = min(50,length(epsi
 #'
 #' @description This method estimates the spectral density and the autocovariances of the error process via a lag-window
 #'  estimator based on the rectangular kernel (see P.J. Brockwell and R.A. Davis (1991). Time Series: Theory and Methods.
-#'  \emph{Springer Science & Business Media}, page 330). The lag is computed according to Efromovich's algorithm.
+#'  \emph{Springer Science & Business Media}, page 330). The lag is computed according to Efromovich's algorithm (Efromovich (1998)).
 #and we use its Fourier coefficients to build an estimation of the covariance vector of the process.
 #'
 #' @param epsilon an univariate process.
@@ -541,7 +560,7 @@ cov_kernel <- function(epsilon, model_selec = -1, model_max = min(50,length(epsi
 #'  is plotted.
 #'
 #' @return The function returns the estimated autocovariances of the process, that is the Fourier coefficients
-#'  of the spectral density estimates, and the dimension chosen by the algorithm.
+#'  of the spectral density estimates, and the order chosen by the algorithm.
 #'  \item{model_selec}{the number of selected autocovariance terms.}
 #'  \item{cov_st}{the estimated autocovariances.}
 #'

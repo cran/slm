@@ -20,7 +20,7 @@ typically the environment from which \code{slm} is called.}
 \item{model, x, y, qr}{logicals. If \code{TRUE} the corresponding components of the fit (the model frame, the model matrix, the response, the QR decomposition) are returned.}
 
 \item{method_cov_st}{the method chosen by the user to estimate the autocovariances of the error process. The user
-has the choice between the methods "fitAR", "spectralproj", "efromovich", "kernel", or "select". By default, the
+has the choice between the methods "fitAR", "spectralproj", "efromovich", "kernel", "select" or "hac". By default, the
 "fitAR" method is used.}
 
 \item{cov_st}{the estimated autocovariances of the error process. The user can give his own vector.}
@@ -46,14 +46,14 @@ has the choice between the methods "fitAR", "spectralproj", "efromovich", "kerne
  useful features of the value returned by \code{slm}.
  An object of class "\code{slm}" is a list containing at least the following components:
  \item{method_cov_st }{ print the method chosen.}
- \item{cov_st }{ the estimated autocovariances of the error process.}
- \item{Cov_ST }{ if given by the user, the estimated covariance matrix of the error process.}
+ \item{cov_st }{ the estimated autocovariances of the error process. NA if "hac" is used.}
+ \item{Cov_ST }{ if given by the user, the estimated covariance matrix of the error process. NA if "hac" is used.}
  \item{model_selec }{ the order of the method.}
- \item{norm_matrix }{ the normalization matrix of the design.}
+ \item{norm_matrix }{ the normalization matrix of the least squares estimator.}
  \item{design_qr }{ the matrix \eqn{(X^{t} X)^{-1}}.}
- \item{coefficients }{ a named vector of coefficients.}
+ \item{coefficients }{ a named vector of the estimated coefficients.}
  \item{residuals }{ the residuals, that is response minus fitted values.}
- \item{fitted.values }{ the fitted mean values.}
+ \item{fitted.values }{ the fitted values.}
  \item{rank }{ the numeric rank of the fitted linear model.}
  \item{df.residual}{ the number of observations minus the number of variables.}
  \item{call }{ the matched call.}

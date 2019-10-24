@@ -14,14 +14,14 @@ is plotted.}
 }
 \value{
 The function returns the estimated autocovariances of the process, that is the Fourier coefficients
- of the spectral density estimates, and the dimension chosen by the algorithm.
+ of the spectral density estimates, and the order chosen by the algorithm.
  \item{model_selec}{the number of selected autocovariance terms.}
  \item{cov_st}{the estimated autocovariances.}
 }
 \description{
 This method estimates the spectral density and the autocovariances of the error process via a lag-window
  estimator based on the rectangular kernel (see P.J. Brockwell and R.A. Davis (1991). Time Series: Theory and Methods.
- \emph{Springer Science & Business Media}, page 330). The lag is computed according to Efromovich's algorithm.
+ \emph{Springer Science & Business Media}, page 330). The lag is computed according to Efromovich's algorithm (Efromovich (1998)).
 }
 \examples{
 x = arima.sim(list(ar=c(0.4,0.2)),1000)

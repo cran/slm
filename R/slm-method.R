@@ -91,7 +91,7 @@ confint.slm = function(object, parm=NULL, level=0.95, ...) {
 #'  \item{df }{ degrees of freedom, a 3-vector \eqn{(p, n-p, p*)}, the first being the number of non-aliased coefficients, the last being the total number of coefficients.}
 #'  \item{chi2statistic }{ a 2-vector with the value of the chi2-statistic with its degree of freedom.}
 #'  \item{r.squared }{ \eqn{R^2}, the 'fraction of variance explained by the model'.}
-#'  \item{cov.unscaled }{ a \eqn{p*p} matrix of (unscaled) covariances of the \eqn{coef[j], j=1, \ldots, p}.}
+#'  \item{cov.unscaled }{ the matrix (X^{t} X)^{(-1)}.}
 #'  \item{correlation }{ the correlation matrix corresponding to the above \code{cov.unscaled}, if \code{correlation = TRUE} is specified.}
 #'  \item{symbolic.cor }{ (only if \code{correlation} is true.) The value of the argument \code{symbolic.cor}.}
 #'
@@ -213,7 +213,8 @@ summary.slm <- function(object, correlation = FALSE, symbolic.cor = FALSE, ...) 
     ans$r.squared <- mss/(mss + rss)
     #ans$adj.r.squared <- 1 - (1 - ans$r.squared) * ((n - df.int)/rdf)
     #F-stat: full model vs intercept
-    Z = solve(chol(Cn[2:num_var,2:num_var]))%*%(norm_matrix[2:num_var,2:num_var]%*%est[-1])
+    Z = solve(expm::sqrtm(as.matrix(Cn[2:num_var,2:num_var])))%*%(norm_matrix[2:num_var,2:num_var]%*%est[-1])
+    #Z = solve(chol(Cn[2:num_var,2:num_var]))%*%(norm_matrix[2:num_var,2:num_var]%*%est[-1])
     ans$chi2statistic <- c(value = sum(Z^2), numdf = num_var - 1)
 
     #ans$fstatistic <- c(value = (mss/(p - df.int))/resvar,
@@ -392,7 +393,8 @@ predict.slm <- function(object, newdata=NULL, interval="confidence", level=0.95,
   alpha = 1 - level
   Dn = object@norm_matrix
   Cn = cov_matrix_estimator(object)
-  design = cbind(rep(1,length(as.matrix(object$model[1]))),as.matrix(object$model[-1]))
+  design = model.matrix(object)
+  #design = cbind(rep(1,length(as.matrix(object$model[1]))),as.matrix(object$model[-1]))
   tdesign = t(design)
 
   if (interval=="confidence") {
@@ -482,4 +484,39 @@ plot.slm <- function(x, ...) {
 #        cex.caption = 1, cex.oma.main = 1.25)
 #
 # }
+
+#' Calculate Variance-Covariance Matrix for a Fitted Model Object of class slm
+#'
+#' @description Returns the variance-covariance matrix of the (non-normalized) least squares estimators for an object of class slm.
+#'
+#' @param object a fitted model object of class slm.
+#' @param ... additional arguments for method functions.
+#'
+#' @return The variance-covariance matrix of the (non-normalized) least squares estimators for an object of class slm.
+#'
+#' @importFrom stats vcov
+#'
+#' @export
+#'
+#' @seealso
+#'  The generic function \code{\link[stats:vcov]{vcov}}.
+#'
+#'  The function \code{\link[slm:cov_matrix_estimator]{cov_matrix_estimator}}.
+#'
+#' @examples
+#'  n = 500
+#'  eps = generative_process(n,"AR1",c(0.7))
+#'  X = as.matrix(generative_model(n,"mod2"))
+#'  Y = 3 + 2*X[,2] + eps
+#'  reg = slm(Y ~ X, method_cov_st = "fitAR", model_selec = -1)
+#'  vcov(reg)
+vcov.slm <- function(object, ...) {
+  vc = vcov(lm(object), ...)
+  vcslm = solve(object@norm_matrix)%*%cov_matrix_estimator(object)%*%solve(object@norm_matrix)
+  dimnames(vcslm) = dimnames(vc)
+  return(vcslm)
+  #Dn^-1*Cn*Dn^-1, enlever la normalisation de Cn
+}
+#vcov = matrice de cov des beta chapeaux non normalises (sigma 2 XtX-1 dans le cas iid).
+
 

@@ -14,13 +14,14 @@ The \code{slm} package enables to fit linear models on datasets considering the 
  but it takes into account the possible correlation between the observations. To estimate the asymptotic covariance matrix of
  the least squares estimator, several approaches are available: "fitAR" calls the
  \code{cov_AR} function, "spectralproj" the \code{cov_spectralproj} function, "kernel" the \code{cov_kernel} function,
- "efromovich" the \code{cov_efromovich} function and "select" the \code{cov_select} function.
+ "efromovich" the \code{cov_efromovich} function and "select" the \code{cov_select} function. The "hac" method uses the \code{sandwich} package,
+ and more precisely, the method described by Andrews (1991) and Zeileis (2004).
 }
 
 \section{Methods for \code{slm}, in "slm-method.R"}{
 
  The \code{slm} function has several associated methods, which are the same as for the \code{lm} function.
- The available methods are: \code{summary}, \code{confint}, \code{predict} and \code{plot}.
+ The available methods are: \code{summary}, \code{confint}, \code{predict}, \code{plot} and \code{vcov}.
 }
 
 \section{Others functions, in "auxiliary-fun.R"}{
@@ -43,6 +44,10 @@ The \code{slm} package enables to fit linear models on datasets considering the 
 }
 
 \references{
-E. Caron, J. Dedecker and B. Michel (2019). Linear regression with stationary errors: the R package slm. \emph{arXiv preprint arXiv:1906.06583}.
+D. Andrews (1991). Heteroskedasticity and autocorrelation consistent covariant matrix estimation. \emph{Econometrica, 59(3), 817-858}.
+
+ E. Caron, J. Dedecker and B. Michel (2019). Linear regression with stationary errors: the R package slm. \emph{arXiv preprint arXiv:1906.06583}.
  \url{https://arxiv.org/abs/1906.06583}.
+
+ A. Zeileis (2004). Econometric computing with HC and HAC covariance matrix estimators.
 }

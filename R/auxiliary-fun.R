@@ -1,38 +1,51 @@
 #' @title Covariance matrix estimator for slm object
 #'
-#' @description This function gives the estimation of the asymptotic covariance matrix of the least squares estimator in the case of the linear regression
+#' @description This function gives the estimation of the asymptotic covariance matrix of the normalized least squares estimator in the case of the linear regression
 #'  model with strictly stationary errors.
 #'
 #' @param object an object of class \code{slm}.
 #'
-#' @details The function computes the covariance matrix estimator of the least squares estimator from the vector \code{cov_st}
+#' @details The function computes the covariance matrix estimator of the normalized least squares estimator from the vector \code{cov_st}
 #'  of a \code{slm} object. If the user has given the argument \code{Cov_ST} in the \code{slm} object, then it is used
-#'  to compute the final covariance matrix.
+#'  to compute the final covariance matrix. If the method used is the "hac" method, then the final covariance matrix is computed via
+#'  the \code{\link[sandwich:kernHAC]{kernHAC}} function of the \code{sandwich} package, by using the Quadratic Spectral kernel and the bandwidth described in Andrews (1991).
 #'  For the methods "efromovich", "kernel" and "select", the covariance matrix estimator may not be positive definite. Then we apply the
 #'  "Positive definite projection" algorithm, which consists in replacing all eigenvalues lower or equal to zero with the smallest
 #'  positive eigenvalue of the covariance matrix.
 #'
-#' @return This function returns the covariance matrix estimator.
+#' @return This function returns the estimation of the asymptotic covariance matrix of the normalized least squares estimator.
 #'
 #' @importFrom stats toeplitz
 #'
+#' @seealso
+#'
+#'  The R package \code{\link[sandwich]{sandwich}}.
+#'
+#'  \code{\link[sandwich:kernHAC]{kernHAC}} for HAC methods.
+#'
 #' @references
+#'  D. Andrews (1991). Heteroskedasticity and autocorrelation consistent covariant matrix estimation. \emph{Econometrica, 59(3), 817-858}.
+#'
 #'  E. Caron, J. Dedecker and B. Michel (2019). Linear regression with stationary errors: the R package slm. \emph{arXiv preprint arXiv:1906.06583}.
 #'  \url{https://arxiv.org/abs/1906.06583}.
 #'
+#'  A. Zeileis (2004). Econometric computing with HC and HAC covariance matrix estimators.
+#'
 #' @export
 cov_matrix_estimator = function(object) {
+  Y = as.matrix(object$model[1])
+  design = model.matrix(object) #design with intercept
+  #design = cbind(rep(1,length(Y)),as.matrix(object$model[-1]))
+  norm_matrix = object@norm_matrix
+  design_qr = object@design_qr
+
   if (is.na(object@cov_st[1])) {
-    Y = as.matrix(object$model[1])
-    design = cbind(rep(1,length(Y)),as.matrix(object$model[-1]))
-    norm_matrix = object@norm_matrix
-    design_qr = object@design_qr
-    Cn = norm_matrix%*%(design_qr)%*%t(design)%*%object@Cov_ST%*%design%*%(design_qr)%*%norm_matrix
+    if (object@method_cov_st=="hac") {
+      Cn = norm_matrix%*%sandwich::kernHAC(lm(object), bw = sandwich::bwAndrews, kernel = "Quadratic Spectral", approx = "AR(1)", sandwich = TRUE)%*%norm_matrix
+    } else {
+      Cn = norm_matrix%*%(design_qr)%*%t(design)%*%object@Cov_ST%*%design%*%(design_qr)%*%norm_matrix
+    }
   } else {
-    Y = as.matrix(object$model[1])
-    design = cbind(rep(1,length(Y)),as.matrix(object$model[-1]))
-    norm_matrix = object@norm_matrix
-    design_qr = object@design_qr
     Cn = norm_matrix%*%(design_qr)%*%t(design)%*%toeplitz(object@cov_st)%*%design%*%(design_qr)%*%norm_matrix
     # Gamma_tilde = toeplitz(object@cov_st)
   }
@@ -75,8 +88,6 @@ cov_matrix_estimator = function(object) {
 #' @references
 #'  E. Caron, J. Dedecker and B. Michel (2019). Linear regression with stationary errors: the R package slm. \emph{arXiv preprint arXiv:1906.06583}.
 #'  \url{https://arxiv.org/abs/1906.06583}.
-#'
-#'  W.B. Wu, M. Pourahmadi (2009). Banding sample autocovariance matrices of stationary processes. \emph{Statistica Sinica}, pp. 1755–1768.
 #'
 #' @export
 Rboot <- function(epsilon,treshold,block_size,block_n,model_max,kernel_fonc){

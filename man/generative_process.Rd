@@ -20,7 +20,7 @@ generative_process(n, process = "AR1", phi = "numeric",
 This function returns a vector of observations drawn according to the selected process.
 }
 \description{
-This is a generative function. The user chooses one of the \code{process}: "AR1", "AR12", "MA12", "Nonmixing", "sysdyn", and it
+This is a generative function. The user chooses one of the \code{process}: "iid", "AR1", "AR12", "MA12", "Nonmixing", "sysdyn", and it
  generates the chosen process. These processes are fully described in the paper of
  E. Caron, J. Dedecker and B. Michel (2019). Linear regression with stationary errors: the R package slm. \emph{arXiv preprint arXiv:1906.06583}.
  \url{https://arxiv.org/abs/1906.06583}.

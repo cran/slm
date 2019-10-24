@@ -35,7 +35,7 @@ The method returns the tapered autocovariance vector with \code{model_selec} aut
 This method estimates the spectral density and the autocovariances of the error process via a lag-window
  (or kernel) estimator (see P.J. Brockwell and R.A. Davis (1991). Time Series: Theory and Methods. \emph{Springer Science & Business Media},
  page 330). The weights are computed according to a kernel \eqn{K} and a bandwidth \eqn{h} (or a lag),
- to be chosen by the user. The lag can be computed automatically by using a bootstrap technique (via the \code{\link[slm:Rboot]{Rboot}} function).
+ to be chosen by the user. The lag can be computed automatically by using a bootstrap technique (as in Wu and Pourahmadi (2009)), via the \code{\link[slm:Rboot]{Rboot}} function.
 }
 \examples{
 x = arima.sim(list(ar=c(0.7)),1000)

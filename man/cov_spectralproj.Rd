@@ -25,7 +25,7 @@ The function returns the estimated autocovariances of the process, that is the F
 \description{
 Computes a data-driven histogram estimator of the spectral density of a process and compute its Fourier coefficients,
  that is the associated autocovariances. For a dimension \eqn{d}, the estimator of the spectral density is an histogram on a regular basis of
- size \eqn{d}. Then we use a penalized criterion in order to choose the dimension which balance the bias and the variance. The penalty
+ size \eqn{d}. Then we use a penalized criterion in order to choose the dimension which balance the bias and the variance, as proposed in Comte (2001). The penalty
  is of the form \eqn{c*d/n}, where \eqn{c} is the constant and \eqn{n} the sample size. The dimension and the constant of the penalty are
  chosen with the slope heuristic method, with the dimension jump algorithm (from package "\code{\link[capushe:capushe]{capushe}}").
 }
