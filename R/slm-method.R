@@ -3,9 +3,9 @@
 #' @description Computes confidence intervals for the model parameters.
 #'
 #' @param object a fitted model object of class \code{slm}.
-#' @param parm 	a specification of which parameters are to be given confidence intervals,
-#'  that is a vector of numbers. If missing, all parameters are considered.
-#' @param level the confidence level required.
+#' @param parm a vector of integer. Specifies the coordinates of the vector of parameters for which a confidence
+#'  interval will be given. If missing, all parameters are considered.
+#' @param level a number between 0 and 1; the confidence level required.
 #' @param ... additional argument(s) for methods.
 #'
 #' @return This function returns the confidence intervals for the parameters of the model.
@@ -77,7 +77,7 @@ confint.slm = function(object, parm=NULL, level=0.95, ...) {
 #' @description Summary method for class "\code{slm}".
 #'
 #' @param object an object of class "\code{slm}", usually, a result of a call to \code{slm}.
-#' @param correlation logical; if \code{TRUE}, the correlation matrix of the estimated parameters is returned and printed.
+#' @param correlation logical. If \code{TRUE}, the correlation matrix of the estimated parameters is returned and printed.
 #' @param symbolic.cor logical. If \code{TRUE}, print the correlations in a symbolic form (see \code{\link[stats:symnum]{symnum}}) rather than as numbers.
 #' @param ... further arguments passed to or from other methods.
 #'
@@ -91,7 +91,7 @@ confint.slm = function(object, parm=NULL, level=0.95, ...) {
 #'  \item{df }{ degrees of freedom, a 3-vector \eqn{(p, n-p, p*)}, the first being the number of non-aliased coefficients, the last being the total number of coefficients.}
 #'  \item{chi2statistic }{ a 2-vector with the value of the chi2-statistic with its degree of freedom.}
 #'  \item{r.squared }{ \eqn{R^2}, the 'fraction of variance explained by the model'.}
-#'  \item{cov.unscaled }{ the matrix (X^{t} X)^{(-1)}.}
+#'  \item{cov.unscaled }{ the matrix \eqn{(X^{t} X)^{-1}}.}
 #'  \item{correlation }{ the correlation matrix corresponding to the above \code{cov.unscaled}, if \code{correlation = TRUE} is specified.}
 #'  \item{symbolic.cor }{ (only if \code{correlation} is true.) The value of the argument \code{symbolic.cor}.}
 #'
@@ -361,7 +361,7 @@ qr.slm <- function(x, ...) {
 #'  If omitted, the fitted values are used.
 #' @param interval type of interval calculation. It can be only \code{interval = "confidence"}, the default value. It computes
 #'  the confidence intervals for \eqn{x' beta}, where \eqn{x'} is a new observation of the design.
-#' @param level tolerance/confidence level.
+#' @param level a number between 0 and 1, which indicates the tolerance/confidence level.
 #' @param ... further arguments passed to or from other methods.
 #'
 #' @details This function produces predicted values, obtained by evaluating the regression function in the frame \code{newdata}

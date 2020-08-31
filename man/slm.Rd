@@ -23,19 +23,19 @@ typically the environment from which \code{slm} is called.}
 has the choice between the methods "fitAR", "spectralproj", "efromovich", "kernel", "select" or "hac". By default, the
 "fitAR" method is used.}
 
-\item{cov_st}{the estimated autocovariances of the error process. The user can give his own vector.}
+\item{cov_st}{numeric vector. The estimated autocovariances of the error process. The user can give his own vector.}
 
-\item{Cov_ST}{an argument given by the user if he wants to use his own covariance matrix estimator.}
+\item{Cov_ST}{matrix. It is an argument given by the user if he wants to use his own covariance matrix estimator.}
 
-\item{model_selec}{the order of the method. If \code{model_selec = -1}, the method works automatically.}
+\item{model_selec}{integer or \code{-1}. The order of the method. If \code{model_selec = -1}, the method works automatically.}
 
-\item{model_max}{maximal order of the method.}
+\item{model_max}{integer. Maximal order of the method.}
 
-\item{kernel_fonc}{to use if \code{method_cov_st = kernel}. Define the kernel to use in the method. The user can give his own kernel function.}
+\item{kernel_fonc}{function. Use this argument if \code{method_cov_st = kernel}. Define the kernel to use in the method. The user can give his own kernel function.}
 
-\item{block_size}{size of the bootstrap blocks if \code{method_cov_st = kernel}. \code{block_size} must be greater than \code{model_max}.}
+\item{block_size}{integer. Size of the bootstrap blocks if \code{method_cov_st = kernel}. \code{block_size} must be greater than \code{model_max}.}
 
-\item{block_n}{blocks number to use for the bootstrap if \code{method_cov_st = kernel}.}
+\item{block_n}{integer. Blocks number to use for the bootstrap if \code{method_cov_st = kernel}.}
 
 \item{plot}{logical. By default, \code{plot = FALSE}.}
 }

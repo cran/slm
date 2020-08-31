@@ -9,19 +9,19 @@ cov_kernel(epsilon, model_selec = -1,
  block_size = length(epsilon)/2, block_n = 100, plot = FALSE)
 }
 \arguments{
-\item{epsilon}{an univariate process.}
+\item{epsilon}{numeric vector. An univariate process.}
 
-\item{model_selec}{the order of the method. If \code{model_selec = -1}, the method chooses
+\item{model_selec}{integer or \code{-1}. The order of the method. If \code{model_selec = -1}, the method chooses
 the treshold automatically. If \code{model_selec = k}, then only \code{k} autocovariance terms are kept
 and smoothed by the kernel.}
 
-\item{model_max}{the maximal order.}
+\item{model_max}{integer. The maximal order.}
 
-\item{kernel_fonc}{define the kernel to use in the method. The user can give his own kernel function.}
+\item{kernel_fonc}{function. Defines the kernel to use in the method. The user can give his own kernel function.}
 
-\item{block_size}{size of the bootstrap blocks. \code{block_size} must be greater than \code{model_max}.}
+\item{block_size}{integer. If \code{model_selec = -1}, it specifies the size of the bootstrap blocks. \code{block_size} must be greater than \code{model_max}.}
 
-\item{block_n}{blocks number to use for the bootstrap.}
+\item{block_n}{integer. If \code{model_selec = -1}, blocks number to use for the bootstrap.}
 
 \item{plot}{logical. By default, \code{plot = FALSE}. If \code{plot = TRUE}, the risk curve is returned and the
 ACF of the process.}

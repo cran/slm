@@ -66,12 +66,12 @@ cov_matrix_estimator = function(object) {
 #' @description This function computes an estimation of the risk for the tapered covariance matrix estimator of a process via a bootstrap method,
 #'  for a specified treshold and a specified kernel.
 #'
-#' @param epsilon an univariate process.
-#' @param treshold number of estimated autocovariance terms that we consider for the estimation of the covariance matrix.
-#' @param block_size the size of the bootstrap blocks. \code{block_size} must be greater than \code{model_max}.
-#' @param block_n blocks number used for the bootstrap.
-#' @param model_max the maximal dimension, that is the maximal number of terms available to estimate the covariance matrix.
-#' @param kernel_fonc the kernel to use. The user can define his own kernel and put it in the argument.
+#' @param epsilon numeric vector. An univariate process.
+#' @param treshold integer. Number of estimated autocovariance terms that we consider for the estimation of the covariance matrix.
+#' @param block_size integer. The size of the bootstrap blocks. \code{block_size} must be greater than \code{model_max}.
+#' @param block_n integer. Blocks number used for the bootstrap.
+#' @param model_max integer. The maximal dimension, that is the maximal number of terms available to estimate the covariance matrix.
+#' @param kernel_fonc function. The kernel to use. The user can define his own kernel and put it in the argument.
 #'
 #@details The goal of this function is to estimate the risk of the tapered covariance matrix estimator via
 #a boostrap approach (see the article of W.B. Wu and M. Pourahmadi (2009), Banding sample autocovariance matrices of

@@ -7,11 +7,12 @@
 cov_AR(epsilon, model_selec = -1, plot = FALSE)
 }
 \arguments{
-\item{epsilon}{an univariate process.}
+\item{epsilon}{numeric vector. An univariate process.}
 
-\item{model_selec}{the order of the method. If \code{model_selec = -1}, it is chosen automatically by using the AIC criterion.}
+\item{model_selec}{integer or \code{-1}. The order of the method, that is the order of the AR process to be fitted on the residuals.
+If \code{model_selec = -1}, it is chosen automatically by using the AIC criterion.}
 
-\item{plot}{logical. By default, \code{plot = FALSE}. If \code{plot = TRUE}, then the ACF and the PACF of the vector \code{epsilon} is plotted.}
+\item{plot}{logical. By default, \code{plot = FALSE}. If \code{plot = TRUE}, then the ACF and the PACF of the vector \code{epsilon} are plotted.}
 }
 \value{
 The function returns the vector of the theoretical autocovariances of the AR process fitted on the process \code{epsilon}.

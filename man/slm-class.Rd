@@ -11,14 +11,16 @@ An S4 class to create an \code{slm} object.
 \section{Slots}{
 
 \describe{
-\item{\code{method_cov_st}}{the method used to compute the autocovariance vector of the error process.}
+\item{\code{method_cov_st}}{the method used to compute the autocovariance vector of the error process. The user
+has the choice between the methods "fitAR", "spectralproj", "efromovich", "kernel", "select" or "hac". By default, the
+"fitAR" method is used.}
 
 \item{\code{cov_st}}{a numeric vector with the estimated autocovariances of the error process, computed from
 the \code{method_cov_st} method.}
 
 \item{\code{Cov_ST}}{the estimated covariance matrix of the error process, computed from the \code{method_cov_st} method.}
 
-\item{\code{model_selec}}{the order of the chosen method. If \code{model_selec = -1}, the method works automatically.}
+\item{\code{model_selec}}{integer. The order of the chosen method. If \code{model_selec = -1}, the method works automatically.}
 
 \item{\code{norm_matrix}}{the normalization matrix of the design X.}
 

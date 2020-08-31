@@ -8,17 +8,17 @@ cov_spectralproj(epsilon, model_selec = -1,
  model_max = min(100,length(epsilon)/2), plot = FALSE)
 }
 \arguments{
-\item{epsilon}{an univariate process.}
+\item{epsilon}{numeric vector. An univariate process.}
 
-\item{model_selec}{the dimension of the method. If \code{model_selec = -1}, the method works automatically and take a dimension between 1 and \code{model_max}.}
+\item{model_selec}{integer. The dimension of the method. If \code{model_selec = -1}, the method works automatically and take a dimension between 1 and \code{model_max}.}
 
-\item{model_max}{the maximal dimension. By default, it is equal to the minimum between 100 and the length of the process divided by 2.}
+\item{model_max}{integer. The maximal dimension. By default, it is equal to the minimum between 100 and the length of the process divided by 2.}
 
 \item{plot}{logical. By default, \code{plot = FALSE}. If \code{plot = TRUE}, plot the spectral density estimator of the process.}
 }
 \value{
 The function returns the estimated autocovariances of the process, that is the Fourier coefficients
- of the spectral density estimates, and the dimension chosen by the algorithm.
+ of the spectral density estimate, and the dimension chosen by the algorithm.
  \item{model_selec}{the dimension selected.}
  \item{cov_st}{the estimated autocovariances.}
 }

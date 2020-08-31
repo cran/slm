@@ -7,17 +7,17 @@
 Rboot(epsilon, treshold, block_size, block_n, model_max, kernel_fonc)
 }
 \arguments{
-\item{epsilon}{an univariate process.}
+\item{epsilon}{numeric vector. An univariate process.}
 
-\item{treshold}{number of estimated autocovariance terms that we consider for the estimation of the covariance matrix.}
+\item{treshold}{integer. Number of estimated autocovariance terms that we consider for the estimation of the covariance matrix.}
 
-\item{block_size}{the size of the bootstrap blocks. \code{block_size} must be greater than \code{model_max}.}
+\item{block_size}{integer. The size of the bootstrap blocks. \code{block_size} must be greater than \code{model_max}.}
 
-\item{block_n}{blocks number used for the bootstrap.}
+\item{block_n}{integer. Blocks number used for the bootstrap.}
 
-\item{model_max}{the maximal dimension, that is the maximal number of terms available to estimate the covariance matrix.}
+\item{model_max}{integer. The maximal dimension, that is the maximal number of terms available to estimate the covariance matrix.}
 
-\item{kernel_fonc}{the kernel to use. The user can define his own kernel and put it in the argument.}
+\item{kernel_fonc}{function. The kernel to use. The user can define his own kernel and put it in the argument.}
 }
 \value{
 This function returns a list with:

@@ -9,10 +9,10 @@
 \arguments{
 \item{object}{a fitted model object of class \code{slm}.}
 
-\item{parm}{a specification of which parameters are to be given confidence intervals,
-that is a vector of numbers. If missing, all parameters are considered.}
+\item{parm}{a vector of integer. Specifies the coordinates of the vector of parameters for which a confidence
+interval will be given. If missing, all parameters are considered.}
 
-\item{level}{the confidence level required.}
+\item{level}{a number between 0 and 1; the confidence level required.}
 
 \item{...}{additional argument(s) for methods.}
 }

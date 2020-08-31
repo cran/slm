@@ -8,7 +8,7 @@ generative_process(n, process = "AR1", phi = "numeric",
   theta = "numeric")
 }
 \arguments{
-\item{n}{sample size.}
+\item{n}{integer. The sample size.}
 
 \item{process}{a list of character to choose the process.}
 

@@ -3,18 +3,24 @@
 #S4 @ : reg@cov_st
 #?slm for documentation
 #devtools::build_manual
-#or setwd("/Users/emmanuel/Universite-Recherche/Seafile/Work-PackageR-STemp/slm/")
+#or setwd("/Users/emmanuel/Seafile/Work-PackageR-STemp/slm/")
 #system("R CMD Rd2pdf . --title=Package slm --output=./manual.pdf --force --no-clean --internals")
+
+#Depuis un terminal, dans le dossier du package
+#R CMD build pour construire le .tar.gz
+#R CMD check --as-cran pour checker
 
 #' @title slm class
 #'
 #' @description An S4 class to create an \code{slm} object.
 #'
-#' @slot method_cov_st the method used to compute the autocovariance vector of the error process.
+#' @slot method_cov_st the method used to compute the autocovariance vector of the error process. The user
+#'  has the choice between the methods "fitAR", "spectralproj", "efromovich", "kernel", "select" or "hac". By default, the
+#'  "fitAR" method is used.
 #' @slot cov_st a numeric vector with the estimated autocovariances of the error process, computed from
 #' the \code{method_cov_st} method.
 #' @slot Cov_ST the estimated covariance matrix of the error process, computed from the \code{method_cov_st} method.
-#' @slot model_selec the order of the chosen method. If \code{model_selec = -1}, the method works automatically.
+#' @slot model_selec integer. The order of the chosen method. If \code{model_selec = -1}, the method works automatically.
 #' @slot norm_matrix the normalization matrix of the design X.
 #' @slot design_qr the matrix \eqn{(X^{t} X)^{-1}}.
 #' @inheritParams lm
@@ -50,14 +56,14 @@ slm.class <- setClass("slm",
 #' @param method_cov_st the method chosen by the user to estimate the autocovariances of the error process. The user
 #'  has the choice between the methods "fitAR", "spectralproj", "efromovich", "kernel", "select" or "hac". By default, the
 #'  "fitAR" method is used.
-#' @param cov_st the estimated autocovariances of the error process. The user can give his own vector.
-#' @param Cov_ST an argument given by the user if he wants to use his own covariance matrix estimator.
-#' @param model_selec the order of the method. If \code{model_selec = -1}, the method works automatically.
+#' @param cov_st numeric vector. The estimated autocovariances of the error process. The user can give his own vector.
+#' @param Cov_ST matrix. It is an argument given by the user if he wants to use his own covariance matrix estimator.
+#' @param model_selec integer or \code{-1}. The order of the method. If \code{model_selec = -1}, the method works automatically.
 #(depends on the method : AIC for AR, ...), model chosen by the user, -1 for automatic selection.
-#' @param model_max maximal order of the method.
-#' @param kernel_fonc to use if \code{method_cov_st = kernel}. Define the kernel to use in the method. The user can give his own kernel function.
-#' @param block_size size of the bootstrap blocks if \code{method_cov_st = kernel}. \code{block_size} must be greater than \code{model_max}.
-#' @param block_n blocks number to use for the bootstrap if \code{method_cov_st = kernel}.
+#' @param model_max integer. Maximal order of the method.
+#' @param kernel_fonc function. Use this argument if \code{method_cov_st = kernel}. Define the kernel to use in the method. The user can give his own kernel function.
+#' @param block_size integer. Size of the bootstrap blocks if \code{method_cov_st = kernel}. \code{block_size} must be greater than \code{model_max}.
+#' @param block_n integer. Blocks number to use for the bootstrap if \code{method_cov_st = kernel}.
 #' @param plot logical. By default, \code{plot = FALSE}.
 #'
 #' @details The \code{slm} function is based on the architecture of the \code{lm} function.
@@ -217,14 +223,16 @@ slm <- function(myformula,
 #' @description This function gives the estimation of the autocovariances of the error process, with the method chosen by the user.
 #'  Five methods are available: "fitAR", "spectralproj", "efromovich", "kernel" and "select".
 #'
-#' @param method_cov_st the method chosen by the user.
-#' @param epsilon an univariate process.
-#' @param model_selec the order of the method. If \code{model_selec = -1}, the method works automatically.
+#' @param method_cov_st the method chosen by the user to estimate the autocovariances of the error process. The user
+#'  has the choice between the methods "fitAR", "spectralproj", "efromovich", "kernel", "select" or "hac". By default, the
+#'  "fitAR" method is used.
+#' @param epsilon numeric vector. An univariate process.
+#' @param model_selec integer or \code{-1}. The order of the method. If \code{model_selec = -1}, the method works automatically.
 #(depends on the method : AIC for AR, ...)
-#' @param model_max maximal dimension of the method.
-#' @param kernel_fonc to use if \code{method_cov_st = kernel}. Define the kernel to use in the method. The user can give his own kernel function.
-#' @param block_size size of the bootstrap blocks if \code{method_cov_st = kernel}. \code{block_size} must be greater than \code{model_max}.
-#' @param block_n blocks number to use for the bootstrap if \code{method_cov_st = kernel}.
+#' @param model_max integer. Maximal dimension of the method.
+#' @param kernel_fonc function. Use this argument if \code{method_cov_st = kernel}. Define the kernel to use in the method. The user can give his own kernel function.
+#' @param block_size integer. Size of the bootstrap blocks if \code{method_cov_st = kernel}. \code{block_size} must be greater than \code{model_max}.
+#' @param block_n integer. Blocks number to use for the bootstrap if \code{method_cov_st = kernel}.
 #' @param plot logical. By default, \code{plot = FALSE}.
 #'
 #' @return The function returns the autocovariances computed with the chosen method.
@@ -264,9 +272,11 @@ cov_method <- function(epsilon, method_cov_st = "fitAR", model_selec = -1,
 #' @description Fit an autoregressive model to the process and compute the theoretical autocovariances of the fitted AR process.
 #'  By default, the order is chosen by using the AIC criterion (\code{model_selec = -1}).
 #'
-#' @param epsilon an univariate process.
-#' @param model_selec the order of the method. If \code{model_selec = -1}, it is chosen automatically by using the AIC criterion.
-#' @param plot logical. By default, \code{plot = FALSE}. If \code{plot = TRUE}, then the ACF and the PACF of the vector \code{epsilon} is plotted.
+#' @param epsilon numeric vector. An univariate process.
+#'
+#' @param model_selec integer or \code{-1}. The order of the method, that is the order of the AR process to be fitted on the residuals.
+#'  If \code{model_selec = -1}, it is chosen automatically by using the AIC criterion.
+#' @param plot logical. By default, \code{plot = FALSE}. If \code{plot = TRUE}, then the ACF and the PACF of the vector \code{epsilon} are plotted.
 #'
 #' @return The function returns the vector of the theoretical autocovariances of the AR process fitted on the process \code{epsilon}.
 #'  \item{model_selec}{the order selected.}
@@ -326,13 +336,13 @@ cov_AR <- function(epsilon, model_selec = -1, plot=FALSE){
 #' @usage cov_spectralproj(epsilon, model_selec = -1,
 #'  model_max = min(100,length(epsilon)/2), plot = FALSE)
 #'
-#' @param epsilon an univariate process.
-#' @param model_selec the dimension of the method. If \code{model_selec = -1}, the method works automatically and take a dimension between 1 and \code{model_max}.
-#' @param model_max the maximal dimension. By default, it is equal to the minimum between 100 and the length of the process divided by 2.
+#' @param epsilon numeric vector. An univariate process.
+#' @param model_selec integer. The dimension of the method. If \code{model_selec = -1}, the method works automatically and take a dimension between 1 and \code{model_max}.
+#' @param model_max integer. The maximal dimension. By default, it is equal to the minimum between 100 and the length of the process divided by 2.
 #' @param plot logical. By default, \code{plot = FALSE}. If \code{plot = TRUE}, plot the spectral density estimator of the process.
 #'
 #' @return The function returns the estimated autocovariances of the process, that is the Fourier coefficients
-#'  of the spectral density estimates, and the dimension chosen by the algorithm.
+#'  of the spectral density estimate, and the dimension chosen by the algorithm.
 #'  \item{model_selec}{the dimension selected.}
 #'  \item{cov_st}{the estimated autocovariances.}
 #'
@@ -435,7 +445,7 @@ cov_spectralproj <- function(epsilon, model_selec = -1, model_max = min(100,leng
 #'
 #' @description Allows the user to select the lags of the autocovariance terms of the process to be kept.
 #'
-#' @param epsilon an univariate process.
+#' @param epsilon numeric vector. An univariate process.
 #' @param model_selec a vector with the positive lags of the selected autocovariance terms. The variance (lag = 0) is automatically selected.
 #' @param plot logical. By default, \code{plot = FALSE}. If \code{plot = TRUE} the ACF of the process is plotted.
 #'
@@ -479,14 +489,14 @@ cov_select <- function(epsilon, model_selec, plot=FALSE){
 #'  model_max = min(50,length(epsilon)/2), kernel_fonc = triangle,
 #'  block_size = length(epsilon)/2, block_n = 100, plot = FALSE)
 #'
-#' @param epsilon an univariate process.
-#' @param model_selec the order of the method. If \code{model_selec = -1}, the method chooses
+#' @param epsilon numeric vector. An univariate process.
+#' @param model_selec integer or \code{-1}. The order of the method. If \code{model_selec = -1}, the method chooses
 #'  the treshold automatically. If \code{model_selec = k}, then only \code{k} autocovariance terms are kept
 #'  and smoothed by the kernel.
-#' @param model_max the maximal order.
-#' @param kernel_fonc define the kernel to use in the method. The user can give his own kernel function.
-#' @param block_size size of the bootstrap blocks. \code{block_size} must be greater than \code{model_max}.
-#' @param block_n blocks number to use for the bootstrap.
+#' @param model_max integer. The maximal order.
+#' @param kernel_fonc function. Defines the kernel to use in the method. The user can give his own kernel function.
+#' @param block_size integer. If \code{model_selec = -1}, it specifies the size of the bootstrap blocks. \code{block_size} must be greater than \code{model_max}.
+#' @param block_n integer. If \code{model_selec = -1}, blocks number to use for the bootstrap.
 #' @param plot logical. By default, \code{plot = FALSE}. If \code{plot = TRUE}, the risk curve is returned and the
 #'  ACF of the process.
 #'
@@ -555,7 +565,7 @@ cov_kernel <- function(epsilon, model_selec = -1, model_max = min(50,length(epsi
 #'  \emph{Springer Science & Business Media}, page 330). The lag is computed according to Efromovich's algorithm (Efromovich (1998)).
 #and we use its Fourier coefficients to build an estimation of the covariance vector of the process.
 #'
-#' @param epsilon an univariate process.
+#' @param epsilon numeric vector. An univariate process.
 #' @param plot logical. By default, \code{plot = FALSE}. If \code{plot = TRUE}, the ACF of the process \code{epsilon}
 #'  is plotted.
 #'

@@ -17,7 +17,7 @@ If omitted, the fitted values are used.}
 \item{interval}{type of interval calculation. It can be only \code{interval = "confidence"}, the default value. It computes
 the confidence intervals for \eqn{x' beta}, where \eqn{x'} is a new observation of the design.}
 
-\item{level}{tolerance/confidence level.}
+\item{level}{a number between 0 and 1, which indicates the tolerance/confidence level.}
 
 \item{...}{further arguments passed to or from other methods.}
 }

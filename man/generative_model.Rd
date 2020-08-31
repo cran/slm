@@ -7,9 +7,9 @@
 generative_model(n, model = "mod1")
 }
 \arguments{
-\item{n}{samples size.}
+\item{n}{integer. The sample size.}
 
-\item{model}{a list of character to choose the model.}
+\item{model}{a list of character "mod1" or "mod2" to choose the model.}
 }
 \value{
 This function returns a data-frame which contains a simulated random design.

@@ -5,7 +5,7 @@
 #'  E. Caron, J. Dedecker and B. Michel (2019). Linear regression with stationary errors: the R package slm. \emph{arXiv preprint arXiv:1906.06583}.
 #'  \url{https://arxiv.org/abs/1906.06583}.
 #'
-#' @param n sample size.
+#' @param n integer. The sample size.
 #' @param process a list of character to choose the process.
 #' @param phi a numeric vector with AR parameters if the process is "AR1" or "AR12".
 #' @param theta a numeric vector with MA parameters if the process is "MA12".
@@ -65,8 +65,8 @@ generative_process <- function(n, process = "AR1", phi = "numeric", theta = "num
 #'  The process \eqn{X} is again an AR(1) process with \code{phi_1 = 0.5}. More information about "mod2" is available in the paper of
 #'  E. Caron, J. Dedecker and B. Michel (2019). Linear regression with stationary errors: the R package slm.
 #'
-#' @param n samples size.
-#' @param model a list of character to choose the model.
+#' @param n integer. The sample size.
+#' @param model a list of character "mod1" or "mod2" to choose the model.
 #'
 #' @return This function returns a data-frame which contains a simulated random design.
 #'

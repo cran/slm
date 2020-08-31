@@ -7,7 +7,7 @@
 cov_efromovich(epsilon, plot = FALSE)
 }
 \arguments{
-\item{epsilon}{an univariate process.}
+\item{epsilon}{numeric vector. An univariate process.}
 
 \item{plot}{logical. By default, \code{plot = FALSE}. If \code{plot = TRUE}, the ACF of the process \code{epsilon}
 is plotted.}

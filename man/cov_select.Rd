@@ -7,7 +7,7 @@
 cov_select(epsilon, model_selec, plot = FALSE)
 }
 \arguments{
-\item{epsilon}{an univariate process.}
+\item{epsilon}{numeric vector. An univariate process.}
 
 \item{model_selec}{a vector with the positive lags of the selected autocovariance terms. The variance (lag = 0) is automatically selected.}
 

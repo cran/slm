@@ -9,19 +9,21 @@ cov_method(epsilon, method_cov_st = "fitAR", model_selec = -1,
   block_n = NULL, plot = FALSE)
 }
 \arguments{
-\item{epsilon}{an univariate process.}
+\item{epsilon}{numeric vector. An univariate process.}
 
-\item{method_cov_st}{the method chosen by the user.}
+\item{method_cov_st}{the method chosen by the user to estimate the autocovariances of the error process. The user
+has the choice between the methods "fitAR", "spectralproj", "efromovich", "kernel", "select" or "hac". By default, the
+"fitAR" method is used.}
 
-\item{model_selec}{the order of the method. If \code{model_selec = -1}, the method works automatically.}
+\item{model_selec}{integer or \code{-1}. The order of the method. If \code{model_selec = -1}, the method works automatically.}
 
-\item{model_max}{maximal dimension of the method.}
+\item{model_max}{integer. Maximal dimension of the method.}
 
-\item{kernel_fonc}{to use if \code{method_cov_st = kernel}. Define the kernel to use in the method. The user can give his own kernel function.}
+\item{kernel_fonc}{function. Use this argument if \code{method_cov_st = kernel}. Define the kernel to use in the method. The user can give his own kernel function.}
 
-\item{block_size}{size of the bootstrap blocks if \code{method_cov_st = kernel}. \code{block_size} must be greater than \code{model_max}.}
+\item{block_size}{integer. Size of the bootstrap blocks if \code{method_cov_st = kernel}. \code{block_size} must be greater than \code{model_max}.}
 
-\item{block_n}{blocks number to use for the bootstrap if \code{method_cov_st = kernel}.}
+\item{block_n}{integer. Blocks number to use for the bootstrap if \code{method_cov_st = kernel}.}
 
 \item{plot}{logical. By default, \code{plot = FALSE}.}
 }
